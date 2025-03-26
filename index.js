@@ -19,26 +19,29 @@ const db= require ('./connection');
    });
 
 
-  app.post('/api/login', async (req, res) => {
+   app.post('/api/login', async (req, res) => {
     try {
-      const { Usuario, Contrasenia } = req.body;
-  
-      const { rows } = await db.query("SELECT * FROM usuarios WHERE usuario = $1", [Usuario]);
-  
-      if (rows.length === 0) {
-        return res.json({ mensaje: "Usuario no encontrado" });
-      }
-      const usuario = rows[0];
-  
-      if (Contrasenia !== usuario.contrasenia) {
-        return res.json({ mensaje: "Contraseña incorrecta" });
-      }
-      res.json({ mensaje: "Login exitoso", usuario });
+        const { Usuario, Contrasenia } = req.body;
+
+        const { rows } = await db.query("SELECT * FROM usuarios WHERE usuario = $1", [Usuario]);
+
+        if (rows.length === 0) {
+            return res.json({ exito: false, mensaje: "Usuario no encontrado" });
+        }
+
+        const usuario = rows[0];
+
+        if (Contrasenia !== usuario.contrasenia) {
+            return res.json({ exito: false, mensaje: "Contraseña incorrecta" });
+        }
+
+        res.json({ exito: true, mensaje: "Login exitoso", usuario });
     } catch (error) {
-      console.error(error);
-      res.json({ mensaje: "Error en el servidor" });
+        console.error(error);
+        res.status(500).json({ exito: false, mensaje: "Error en el servidor" });
     }
-  });
+});
+
 
   
 //consultas selec por id y tablas completas
