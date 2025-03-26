@@ -7,49 +7,30 @@ app.use(express.json());
 const db= require ('./connection');
 
 
-app.get("/api/usuarioTipo/:idusuarios", async (request, response) => {
-    try {
-      const idusuarios = request.params.idusuarios;
-      const resultado = await db.query(
-        "SELECT usuario, tipo FROM usuarios WHERE idusuarios = $1", 
-        [idusuarios]
-      );
-  
-      if (resultado.rows.length === 0) {
-        return response.status(404).json({ mensaje: "Usuario no encontrado" });
-      }
-  
-      const usuario = resultado.rows[0];
-      response.json({
-        usuario: usuario.usuario,
-        tipo: usuario.tipo
-      });
-  
-    } catch (error) {
-      console.error(error);
-      response.status(500).json({ mensaje: "Error en el servidor" });
-    }
-  });
+
 
   app.post('/api/login', async (req, res) => {
     try {
-        const { Usuario, Contrasenia } = req.body;
-        
-        const { rows } = await db.query("SELECT * FROM usuarios WHERE usuario = $1", [Usuario]);
-        if (rows.length === 0) return res.json({ mensaje: "Usuario no encontrado" });
-        
-        const usuario = rows[0];
-        if (Contrasenia !== usuario.contrasenia) {
-            return res.json({ mensaje: "Contraseña incorrecta" });
-        }
-
-        res.json({ mensaje: "Login exitoso", usuario });
+      const { Usuario, Contrasenia } = req.body;
+  
+      const { rows } = await db.query("SELECT * FROM usuarios WHERE usuario = $1", [Usuario]);
+  
+      if (rows.length === 0) {
+        return res.json({ mensaje: "Usuario no encontrado" });
+      }
+      const usuario = rows[0];
+  
+      if (Contrasenia !== usuario.contrasenia) {
+        return res.json({ mensaje: "Contraseña incorrecta" });
+      }
+      res.json({ mensaje: "Login exitoso", usuario });
     } catch (error) {
-        console.error(error);
-        res.json({ mensaje: "Error en el servidor" });
+      console.error(error);
+      res.json({ mensaje: "Error en el servidor" });
     }
-});
+  });
 
+  
 //consultas selec por id y tablas completas
 app.get("/api/consultaIdUsuarios/:idusuarios", async (request, response) => {
     try {
