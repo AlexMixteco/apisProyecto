@@ -7,6 +7,16 @@ app.use(express.json());
 const db= require ('./connection');
 
 
+   app.get("/api/mediciones/:sensor_idsensor", async (req, res) => {
+    try {
+        const { sensor_idsensor } = req.params;
+        const resultado = await db.query("SELECT * FROM mediciones WHERE sensor_idsensor = $1", [sensor_idsensor]);
+        res.json(resultado.rows);
+    } catch (error) {
+        console.error(error);
+        res.json({ mensaje: "Error en el servidor" });
+    }
+   });
 
 
   app.post('/api/login', async (req, res) => {
