@@ -125,33 +125,39 @@ app.post("/api/insertarDispositivo", async (request, response) => {
     }
 });
 
-app.put("/api/actualizarUsuarios", async (request, response) => {
+app.put("/api/actualizarUsuarios/:id", async (request, response) => {
     try {
-        const { Idusuarios, Dispositivo_iddispositivo, Nombre, Apellido, Correo, Usuaurio, Contrasenia, Tipo } = request.body;
+        const { id } = request.params;  
+        const { Dispositivo_iddispositivo, Nombre, Apellido, Correo, Usuario, Contrasenia, Tipo } = request.body;
 
-        const query = `update usuarios set dispositivo_iddispositivo = $1, nombre = $2, apellido = $3, correo = $4, usuario =$5, contrasenia =$6, tipo =$7 WHERE idusuarios = $8`;
+        const query = `UPDATE usuarios SET dispositivo_iddispositivo = $1, nombre = $2, apellido = $3, correo = $4, usuario = $5, contrasenia = $6, tipo = $7 WHERE idusuarios = $8`;
 
-        await db.query(query, [Dispositivo_iddispositivo, Nombre, Apellido, Correo, Usuario, Contrasenia, Tipo,Idusuarios]);
+        await db.query(query, [Dispositivo_iddispositivo, Nombre, Apellido, Correo, Usuario, Contrasenia, Tipo, id]);
 
         response.json({ mensaje: "Usuario actualizado correctamente" });
     } catch (error) {
         console.log(error);
+        response.status(500).json({ mensaje: "Error al actualizar el usuario" });
     }
 });
 
-app.put("/api/actualizarDispositivo", async (request, response) => {
+
+app.put("/api/actualizarDispositivo/:id", async (request, response) => {
     try {
-        const { Iddispositivo, Ubicacion } = request.body;
+        const { id } = request.params;  
+        const { Ubicacion } = request.body;
 
-        const query = `update dispositivo set ubicacion = $1  where iddispositivo = $2`;
+        const query = `UPDATE dispositivo SET ubicacion = $1 WHERE iddispositivo = $2`;
 
-        await db.query(query, [Ubicacion, Iddispositivo]);
+        await db.query(query, [Ubicacion, id]);
 
         response.json({ mensaje: "Dispositivo actualizado correctamente" });
     } catch (error) {
         console.log(error);
+        response.status(500).json({ mensaje: "Error al actualizar el dispositivo" });
     }
 });
+
 
 app.delete("/api/eliminarUsuarios/:idusuarios", async (request, response) => {
     try {
