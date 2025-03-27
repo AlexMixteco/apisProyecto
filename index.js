@@ -58,13 +58,29 @@ app.get("/api/consultaIdUsuarios/:idusuarios", async (request, response) => {
 
 app.get("/api/consultaIdDispositivos/:iddispositivo", async (request, response) => {
     try {
-        const resultado = await db.query("select * from dispositivo where iddispositivo = $1" ,[request.params.iddispositivo]  );
-        console.log(resultado.rows);
+        const resultado = await db.query("select * from dispositivo where iddispositivo = $1", [request.params.iddispositivo]);
+        
+        if (resultado.rows.length > 0) {
+            // Enviar respuesta como JSON con los datos del dispositivo
+            response.json({
+                exito: true,
+                mensaje: "Datos del dispositivo obtenidos con éxito",
+                dispositivo: resultado.rows[0]  // Aquí puedes cambiar según lo que necesites enviar
+            });
+        } else {
+            response.json({
+                exito: false,
+                mensaje: "Dispositivo no encontrado"
+            });
+        }
         
     } catch (error) {
         console.log(error);
+        response.status(500).json({
+            exito: false,
+            mensaje: "Error interno del servidor"
+        });
     }
-    response.send("respuesta");
 });
 
 app.get("/api/selectTablas/:tabla", async (request, response) => {
