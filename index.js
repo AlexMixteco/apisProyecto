@@ -7,16 +7,25 @@ app.use(express.json());
 const db= require ('./connection');
 
 
-   app.get("/api/mediciones/:sensor_idsensor", async (req, res) => {
+app.get("/api/mediciones/:dispositivo_iddispositivo/:sensor_idsensor", async (req, res) => {
     try {
-        const { sensor_idsensor } = req.params;
-        const resultado = await db.query("SELECT * FROM mediciones WHERE sensor_idsensor = $1", [sensor_idsensor]);
-        res.json(resultado.rows);
+        const { dispositivo_iddispositivo, sensor_idsensor } = req.params;
+        const resultado = await db.query(
+            "SELECT * FROM mediciones WHERE dispositivo_iddispositivo = $1 AND sensor_idsensor = $2",
+            [dispositivo_iddispositivo, sensor_idsensor]
+        );
+        
+        if (resultado.rows.length > 0) {
+            res.json(resultado.rows);  // Devuelve las mediciones encontradas
+        } else {
+            res.json([]);  // Si no se encuentran mediciones, devuelve un arreglo vacío
+        }
     } catch (error) {
         console.error(error);
         res.json({ mensaje: "Error en el servidor" });
     }
-   });
+});
+
 
 
    app.post('/api/login', async (req, res) => {
