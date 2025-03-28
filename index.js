@@ -142,22 +142,19 @@ app.put("/api/actualizarUsuarios/:id", async (request, response) => {
 });
 
 
-app.put("/api/actualizarDispositivo/:id", async (request, response) => {
+app.put("/api/actualizarDispositivo", async (request, response) => {
     try {
-        const { id } = request.params;  
-        const { Ubicacion } = request.body;
+        const { Iddispositivo, Ubicacion } = request.body;
 
-        const query = `UPDATE dispositivo SET ubicacion = $1 WHERE iddispositivo = $2`;
+        const query = `update dispositivo set ubicacion = $1  where iddispositivo = $2`;
 
-        await db.query(query, [Ubicacion, id]);
+        await db.query(query, [Ubicacion, Iddispositivo]);
 
         response.json({ mensaje: "Dispositivo actualizado correctamente" });
     } catch (error) {
         console.log(error);
-        response.status(500).json({ mensaje: "Error al actualizar el dispositivo" });
     }
 });
-
 
 app.delete("/api/eliminarUsuarios/:idusuarios", async (request, response) => {
     try {
